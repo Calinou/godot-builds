@@ -22,8 +22,9 @@ Here are some technical details:
 
 - **Linux editors come as [AppImages](https://appimage.org/).**
   - No dependencies need to be installed before running them – just download it,
-    make it executable then run it! This also provides substantial file size
-    reductions thanks to the built-in DEFLATE compression.
+    make it executable then run it!
+  - These also provide substantial file size reductions thanks to the built-in
+    DEFLATE compression.
 - **Windows editors are packaged into installers generated using [InnoSetup](http://www.jrsoftware.org/isinfo.php).**
   - The installers do not require administrative privileges to work.
   - These also provide built-in LZMA compression, making the download faster.
