@@ -8,18 +8,18 @@
 
 set -euo pipefail
 
-# TODO: install WINE and MinGW on Fedora for Windows builds
 if [ -f "/etc/redhat-release" ]; then
   # Fedora
-  dnf update -y
-  dnf install -y git cmake ruby scons pkgconfig wget gcc-c++ libX11-devel libXcursor-devel \
+  sudo dnf update -y
+  sudo dnf install -y git cmake ruby scons pkgconfig wget gcc-c++ libX11-devel libXcursor-devel \
                  libXrandr-devel libXinerama-devel mesa-libGL-devel \
                  alsa-lib-devel pulseaudio-libs-devel freetype-devel \
-                 openssl-devel libudev-devel mesa-libGLU-devel
+                 openssl-devel libudev-devel mesa-libGLU-devel mingw32-gcc-c++ mingw64-gcc-c++ \
+                 mingw32-winpthreads-static mingw64-winpthreads-static wine
 else
   # Ubuntu
-  apt-get update -y
-  apt-get install -y openssh-client git cmake wget ruby build-essential scons \
+  sudo apt-get update -y
+  sudo apt-get install -y openssh-client git cmake wget ruby build-essential scons \
                      pkg-config libx11-dev libxcursor-dev libxinerama-dev \
                      libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev \
                      libfreetype6-dev libssl-dev libudev-dev libxrandr-dev

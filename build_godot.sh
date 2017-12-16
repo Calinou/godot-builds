@@ -40,10 +40,15 @@ export TEMPLATES_DIR="$ARTIFACTS_DIR/templates"
 # The directory where the Godot Git repository will be cloned
 export GODOT_DIR="/tmp/godot"
 
+# Install dependencies if needed
+if [ ! -d "$TOOLS_DIR" ]; then
+  "$UTILITIES_DIR/install_dependencies.sh"
+fi
+
 # Delete the existing Godot Git repository (it probably is from an old build)
 # then clone a fresh copy
-# rm -rf "$GODOT_DIR"
-# git clone --depth=1 "https://github.com/godotengine/godot.git" "$GODOT_DIR"
+rm -rf "$GODOT_DIR"
+git clone --depth=1 "https://github.com/godotengine/godot.git" "$GODOT_DIR"
 
 cd "$GODOT_DIR"
 
