@@ -2,8 +2,8 @@
 #
 # This script compiles and packages Godot for various platforms.
 #
-# This script is licensed under CC0 1.0 Universal:
-# https://creativecommons.org/publicdomain/zero/1.0/
+# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
+# See `LICENSE.md` included in the source distribution for details.
 
 set -euo pipefail
 
@@ -13,10 +13,10 @@ set -euo pipefail
 export DIR
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Specify the number of CPU threads to use as the command line argument
-# If not set, defaults to all CPU threads
+# Specify the number of CPU threads to use as the first command line argument
+# If not set, defaults to 1.5 times the number of CPU threads
 export THREADS
-THREADS="${1:-"$(nproc)"}"
+THREADS="${1:-"$(($(nproc) * 3/2))"}"
 
 # Common directories used in the script
 export SCRIPTS_DIR
@@ -25,6 +25,10 @@ SCRIPTS_DIR="$DIR/scripts"
 # The directory where utility scripts are located
 export UTILITIES_DIR
 UTILITIES_DIR="$DIR/utilities"
+
+# The directory where resource files are located
+export RESOURCES_DIR
+RESOURCES_DIR="$DIR/resources"
 
 # The directory where SDKs and tools like InnoSetup are located
 export TOOLS_DIR
@@ -40,10 +44,8 @@ export TEMPLATES_DIR="$ARTIFACTS_DIR/templates"
 # The directory where the Godot Git repository will be cloned
 export GODOT_DIR="/tmp/godot"
 
-# Install dependencies if needed
-if [ ! -d "$TOOLS_DIR" ]; then
-  "$UTILITIES_DIR/install_dependencies.sh"
-fi
+# Install or update dependencies
+"$UTILITIES_DIR/install_dependencies.sh"
 
 # Delete the existing Godot Git repository (it probably is from an old build)
 # then clone a fresh copy
@@ -64,7 +66,7 @@ BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 
 # SCons flags to use in all build commands
-export SCONS_FLAGS="progress=no -j$THREADS"
+export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
 # Run the scripts
 
@@ -73,13 +75,13 @@ export SCONS_FLAGS="progress=no -j$THREADS"
 # "$SCRIPTS_DIR/linux.sh" templates
 # "$SCRIPTS_DIR/macos.sh" editor
 # "$SCRIPTS_DIR/macos.sh" templates
-"$SCRIPTS_DIR/windows.sh" editor
-"$SCRIPTS_DIR/windows.sh" templates
+# "$SCRIPTS_DIR/windows.sh" editor
+# "$SCRIPTS_DIR/windows.sh" templates
 
 # Mobile/Web platforms
 # "$SCRIPTS_DIR/html5.sh"
 # "$SCRIPTS_DIR/ios.sh"
-# "$SCRIPTS_DIR/android.sh"
+"$SCRIPTS_DIR/android.sh"
 
 # Deploy
 

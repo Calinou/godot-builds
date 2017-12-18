@@ -2,8 +2,8 @@
 #
 # This script compiles and packages Godot for Windows using MinGW and InnoSetup.
 #
-# This script is licensed under CC0 1.0 Universal:
-# https://creativecommons.org/publicdomain/zero/1.0/
+# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
+# See `LICENSE.md` included in the source distribution for details.
 
 set -euo pipefail
 

@@ -2,7 +2,7 @@
 
 This repository contains scripts for compiling Godot for various platforms.
 
-## [Download builds](https://godot.hugo.pro/)
+## [~~Download builds~~](https://godot.hugo.pro/) (not yet ready)
 
 ## Using this build system for your own builds
 
