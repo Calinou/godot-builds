@@ -3,3 +3,6 @@ artifacts/
 
 # The default location of tools and SDKs used by the build system
 tools/
+
+# Xcode DMG images
+*.dmg
