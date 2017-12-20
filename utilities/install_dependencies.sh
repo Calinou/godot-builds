@@ -11,7 +11,12 @@ set -euo pipefail
 # Path to the Xcode DMG image
 export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 
-echo -e "\n\e[4mInstalling dependencies (administrative privileges may be required)\e[0m\n"
+# Output an underlined line in standard output
+echo_header() {
+  echo -e "\e[4m$1\e[0m"
+}
+
+echo_header "Installing dependencies (administrative privileges may be required)…"
 
 # Display a warning message if no Xcode DMG is found
 if [ ! -f "$XCODE_DMG" ]; then
@@ -42,15 +47,19 @@ mkdir -p "$TOOLS_DIR"
 
 # Install InnoSetup
 
-if [  -d "$TOOLS_DIR/innosetup" ]; then
+if [ ! -d "$TOOLS_DIR/innosetup" ]; then
+  echo_header "Downloading InnoSetup…"
   curl -o "$TOOLS_DIR/innosetup.zip" "https://archive.hugo.pro/.public/godot-builds/innosetup-5.5.9-unicode.zip"
   unzip -q "$TOOLS_DIR/innosetup.zip" -d "$TOOLS_DIR"
   rm "$TOOLS_DIR/innosetup.zip"
+else
+  echo_header "InnoSetup is already installed."
 fi
 
 # Install the Android SDK
 
-if [  -d "$TOOLS_DIR/android" ]; then
+if [ ! -d "$TOOLS_DIR/android" ]; then
+  echo_header "Downloading Android SDK…"
   # Download and extract the SDK
   curl -o "$TOOLS_DIR/android.zip" "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
   # The SDK tools must be located in `$TOOLS_DIR/android/tools` as
@@ -58,23 +67,35 @@ if [  -d "$TOOLS_DIR/android" ]; then
   mkdir "$TOOLS_DIR/android"
   unzip -q "$TOOLS_DIR/android.zip" -d "$TOOLS_DIR/android"
   rm "$TOOLS_DIR/android.zip"
+else
+  echo_header "Android SDK is already installed."
 fi
 
 # If the user provides an Xcode DMG image, install OSXCross
-# (which includes darling-dmg)
+# (which includes darling-dmg) and cctools-port
 
-if [ -f "$XCODE_DMG" ] && [ ! -d "$TOOLS_DIR/osxcross" ] && [ ! -d "$TOOLS_DIR/cctools-port" ]; then
-  # OSXCross (for macOS builds)
-  curl -o "$TOOLS_DIR/osxcross.zip" "https://codeload.github.com/tpoechtrager/osxcross/zip/master"
-  unzip -q "$TOOLS_DIR/osxcross.zip" -d "$TOOLS_DIR"
-  mv "$TOOLS_DIR/osxcross-master" "$TOOLS_DIR/osxcross"
-  cd "$TOOLS_DIR/osxcross"
-  tools/gen_sdk_package_darling_dmg.sh "$XCODE_DMG"
-  mv "*.tar.xz" "$TOOLS_DIR/osxcross/tarballs"
-  UNATTENDED=1 ./build.sh
+if [ -f "$XCODE_DMG" ]; then
+  if [ ! -d "$TOOLS_DIR/osxcross" ]; then
+    # OSXCross (for macOS builds)
+    echo_header "Installing OSXCross…"
+    curl -o "$TOOLS_DIR/osxcross.zip" "https://codeload.github.com/tpoechtrager/osxcross/zip/master"
+    unzip -q "$TOOLS_DIR/osxcross.zip" -d "$TOOLS_DIR"
+    mv "$TOOLS_DIR/osxcross-master" "$TOOLS_DIR/osxcross"
+    cd "$TOOLS_DIR/osxcross"
+    tools/gen_sdk_package_darling_dmg.sh "$XCODE_DMG"
+    mv "MacOSX10.11.sdk.tar.xz" "$TOOLS_DIR/osxcross/tarballs"
+    UNATTENDED=1 ./build.sh
+  else
+    echo_header "OSXCross is already installed."
+  fi
 
-  # cctools-port (for iOS builds)
-  curl -o "$TOOLS_DIR/cctools-port.zip" "https://github.com/tpoechtrager/cctools-port/archive/master.zip"
-  unzip -q "$TOOLS_DIR/cctools-port.zip" -d "$TOOLS_DIR"
-  mv "TOOLS_DIR/cctools-port-master" "$TOOLS_DIR/cctools-port"
+  if [ ! -d "$TOOLS_DIR/cctools-port" ]; then
+    # cctools-port (for iOS builds)
+    echo_header "Installing cctools-port…"
+    curl -o "$TOOLS_DIR/cctools-port.zip" "https://codeload.github.com/tpoechtrager/cctools-port/zip/master"
+    unzip -q "$TOOLS_DIR/cctools-port.zip" -d "$TOOLS_DIR"
+    mv "$TOOLS_DIR/cctools-port-master" "$TOOLS_DIR/cctools-port"
+  else
+    echo_header "cctools-port is already installed."
+  fi
 fi

@@ -5,7 +5,6 @@
 # Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
 # See `LICENSE.md` included in the source distribution for details.
 
-
 set -euo pipefail
 
 # Build Godot editor or templates, depending on the first command-line argument
