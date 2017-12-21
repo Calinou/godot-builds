@@ -7,6 +7,23 @@
 
 set -euo pipefail
 
+# Helper functions
+
+# Output an underlined line in standard output
+echo_header() {
+  echo -e "\e[4m$1\e[0m"
+}
+
+# Output a successful build step
+echo_success() {
+  echo -e "\e[4;32m$1\e[0m"
+}
+
+export -f echo_header
+export -f echo_success
+
+# Variables
+
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any
 # location
@@ -50,6 +67,7 @@ export GODOT_DIR="/tmp/godot"
 # Delete the existing Godot Git repository (it probably is from an old build)
 # then clone a fresh copy
 rm -rf "$GODOT_DIR"
+echo_header "Cloning Godot Git repository…"
 git clone --depth=1 "https://github.com/godotengine/godot.git" "$GODOT_DIR"
 
 cd "$GODOT_DIR"

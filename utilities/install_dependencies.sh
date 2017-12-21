@@ -11,11 +11,6 @@ set -euo pipefail
 # Path to the Xcode DMG image
 export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 
-# Output an underlined line in standard output
-echo_header() {
-  echo -e "\e[4m$1\e[0m"
-}
-
 echo_header "Installing dependencies (administrative privileges may be required)…"
 
 # Display a warning message if no Xcode DMG is found
@@ -58,7 +53,7 @@ fi
 
 # Install the Android SDK
 
-if [ ! -d "$TOOLS_DIR/android" ]; then
+if [ "$ANDROID_HOME" ] && [ ! -d "$TOOLS_DIR/android" ]; then
   echo_header "Downloading Android SDK…"
   # Download and extract the SDK
   curl -o "$TOOLS_DIR/android.zip" "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
@@ -67,8 +62,10 @@ if [ ! -d "$TOOLS_DIR/android" ]; then
   mkdir "$TOOLS_DIR/android"
   unzip -q "$TOOLS_DIR/android.zip" -d "$TOOLS_DIR/android"
   rm "$TOOLS_DIR/android.zip"
+elif [ "$ANDROID_HOME" ]; then
+  echo_header "Android SDK is already installed system-wide".
 else
-  echo_header "Android SDK is already installed."
+  echo_header "Android SDK is already installed using this script."
 fi
 
 # If the user provides an Xcode DMG image, install OSXCross
