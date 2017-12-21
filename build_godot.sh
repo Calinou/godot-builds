@@ -32,29 +32,23 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Specify the number of CPU threads to use as the first command line argument
 # If not set, defaults to 1.5 times the number of CPU threads
-export THREADS
-THREADS="${1:-"$(($(nproc) * 3/2))"}"
+export THREADS="${1:-"$(($(nproc) * 3/2))"}"
 
 # Common directories used in the script
-export SCRIPTS_DIR
-SCRIPTS_DIR="$DIR/scripts"
+export SCRIPTS_DIR="$DIR/scripts"
 
 # The directory where utility scripts are located
-export UTILITIES_DIR
-UTILITIES_DIR="$DIR/utilities"
+export UTILITIES_DIR="$DIR/utilities"
 
 # The directory where resource files are located
-export RESOURCES_DIR
-RESOURCES_DIR="$DIR/resources"
+export RESOURCES_DIR="$DIR/resources"
 
 # The directory where SDKs and tools like InnoSetup are located
-export TOOLS_DIR
-TOOLS_DIR="$DIR/tools"
+export TOOLS_DIR="$DIR/tools"
 
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
-export ARTIFACTS_DIR
-ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
+export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
 export EDITOR_DIR="$ARTIFACTS_DIR/editor"
 export TEMPLATES_DIR="$ARTIFACTS_DIR/templates"
 
@@ -89,12 +83,12 @@ export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 # Run the scripts
 
 # Desktop platforms
-# "$SCRIPTS_DIR/linux.sh" editor
-# "$SCRIPTS_DIR/linux.sh" templates
-# "$SCRIPTS_DIR/macos.sh" editor
-# "$SCRIPTS_DIR/macos.sh" templates
-# "$SCRIPTS_DIR/windows.sh" editor
-# "$SCRIPTS_DIR/windows.sh" templates
+"$SCRIPTS_DIR/linux.sh" editor
+"$SCRIPTS_DIR/linux.sh" templates
+"$SCRIPTS_DIR/macos.sh" editor
+"$SCRIPTS_DIR/macos.sh" templates
+"$SCRIPTS_DIR/windows.sh" editor
+"$SCRIPTS_DIR/windows.sh" templates
 
 # Mobile/Web platforms
 # "$SCRIPTS_DIR/html5.sh"

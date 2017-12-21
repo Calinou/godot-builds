@@ -7,14 +7,10 @@
 
 set -euo pipefail
 
-# The path to the InnoSetup installation
-export INNOSETUP_DIR="$TOOLS_DIR/innosetup"
+# The path to the Inno Setup compiler (ISCC.exe)
+export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
 
-# The path to ISCC.exe
-export ISCC="$INNOSETUP_DIR/ISCC.exe"
-
-# Build Godot editor or templates, depending on the first command-line argument
-# Note that LTO is not available for 32-bit targets, so it is disabled when
+# NOTE: LTO is not available for 32-bit targets, so it is disabled when
 # building for these targets
 
 if [ "$1" == "editor" ]; then
@@ -27,30 +23,37 @@ if [ "$1" == "editor" ]; then
         "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe"
 
   echo_header "Packaging editors for Windows…"
-  mkdir -p "$EDITOR_PATH/x86_64/Godot" "$EDITOR_PATH/x86/Godot"
-  mv "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_PATH/x86_64/Godot/godot.exe"
-  mv "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_PATH/x86/Godot/godot.exe"
+  mkdir -p "$EDITOR_DIR/x86_64/Godot" "$EDITOR_DIR/x86/Godot"
+  mv "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
+  mv "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
 
   # Create ZIP archives
-  cd "$EDITOR_PATH/x86_64"
+  cd "$EDITOR_DIR/x86_64"
   zip -r9 "Godot-Windows-x86_64.zip" "Godot"
-  cd "$EDITOR_PATH/x86"
+  cd "$EDITOR_DIR/x86"
   zip -r9 "Godot-Windows-x86.zip" "Godot"
 
-  # Generate Windows installers
+  # Prepare Windows installer generation
   echo_header "Generating Windows installers…"
-  cd "$INNOSETUP_DIR"
-  mv "$EDITOR_PATH/x86_64/Godot/godot.exe" "."
+  cd "$EDITOR_DIR"
+  cp "$RESOURCES_DIR/windows/godot.iss" "."
+
+  # Generate 64-bit Windows installer
+  mv "$EDITOR_DIR/x86_64/Godot/godot.exe" "."
   wine "$ISCC" "godot.iss"
-  mv "$EDITOR_PATH/x86/Godot/godot.exe" "."
+
+  # Generate 32-bit Windows installer
+  mv "$EDITOR_DIR/x86/Godot/godot.exe" "."
   wine "$ISCC" "godot.iss" /DApp32Bit
 
-  # Remove temporary directories
-  rmdir "$EDITOR_PATH/x86_64" "$EDITOR_PATH/x86"
-
   # Move installers to the artifacts path
-  cp "$INSTALLER_PATH/Output/godot-windows-installer-x86_64.exe" "$EDITOR_PATH/Godot-Windows-x86_64.exe"
-  cp "$INSTALLER_PATH/Output/godot-windows-installer-x86.exe" "$EDITOR_PATH/Godot-Windows-x86.exe"
+  mv "$EDITOR_DIR/Output/godot-windows-installer-x86_64.exe" "$EDITOR_DIR/Godot-Windows-x86_64.exe"
+  mv "$EDTIOR_DIR/Output/godot-windows-installer-x86.exe" "$EDITOR_DIR/Godot-Windows-x86.exe"
+
+  # Remove temporary directories
+  rmdir "$EDITOR_DIR/x86_64" \
+        "$EDITOR_DIR/x86" \
+        "$EDITOR_DIR/Output"
 
   echo_success "Finished building editor for Windows."
 fi
