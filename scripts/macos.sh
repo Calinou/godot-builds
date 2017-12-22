@@ -11,7 +11,8 @@ set -euo pipefail
 export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
 
 # Specify the macOS SDK version as SCons defaults to darwin14
-export SCONS_FLAGS="$SCONS_FLAGS osxcross_sdk=darwin15"
+# and use Xcode Clang flags
+export SCONS_FLAGS="$SCONS_FLAGS osxcross_sdk=darwin15 CCFLAGS=-D__MACPORTS__"
 
 # Build Godot editor or templates, depending on the first command-line argument
 

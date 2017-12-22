@@ -11,12 +11,12 @@ set -euo pipefail
 
 # Output an underlined line in standard output
 echo_header() {
-  echo -e "\e[4m$1\e[0m"
+  echo -e "\e[1;4m$1\e[0m"
 }
 
 # Output a successful build step
 echo_success() {
-  echo -e "\e[4;32m$1\e[0m"
+  echo -e "\e[1;4;32m$1\e[0m"
 }
 
 export -f echo_header
@@ -57,6 +57,8 @@ export GODOT_DIR="/tmp/godot"
 
 # Install or update dependencies
 "$UTILITIES_DIR/install_dependencies.sh"
+
+mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
 # Delete the existing Godot Git repository (it probably is from an old build)
 # then clone a fresh copy
